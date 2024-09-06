@@ -1,0 +1,132 @@
+---
+title: "FMIndex_Vignettes"
+author: 
+  - name: "Cattafi Denis"
+    email: "denis.cattafi@mail.polimi.it"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FMIndex_Vignettes}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+## FM-Index {#FM}
+
+This index consists in three data structures that can be used not only for an 
+efficient storage of long DNA sequences, but also for count, search or 
+extraction of specific patterns.
+This functions are not currently implemented, but will be in the future.
+The FM-Index can be used for any type of string, but in this package the usage 
+is limited to DNA sequences.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+```
+
+### Usage Example
+
+```{r setup}
+library(FMIndex)
+```
+
+```{r,results="hide"}
+#Specify the FASTA file, the parameters and the output directory
+file <- system.file("extdata", "prova.fasta", package = "FMIndex")
+step_tally <- 10
+k <- 10
+dir <- "./Prova_Results"
+
+# Create the FM-Index in a specified directory
+FM_index(file,10,10,dir)
+```
+### **Output of FM_Index function**
+
+After the execution, 3 CSV files are created in the output directory:
+
+-   `BWT.csv`: Contains the BWT (\ref(BWT)) of the function.
+-   `Sparse_Tally.csv`: Contains the sparse tally matrix (\ref(TM)) of the BWT.
+-   `Subset_Suffix_Array.csv`: Contains a subset of the Suffix Array (\ref(SA)).
+
+A message of success is returned. 
+In case of error, the function stops and an error messages returned
+
+This files can be used for further analysis like pattern count or search, 
+that will be implemented in this package in the future
+
+
+### Clarification
+\ref(FM) is the only function to run to obtain the FMIndex as explained in the 
+output section.
+For completeness, also the subfunctions used to build the index are exported and
+accessible.
+Their usage is explained in the following vignettes.
+\n
+\n
+
+#### Subset Suffix Array {#SA}
+
+A data structure of the \ref(FM).
+A suffix array is composed of all the suffixes of a string in a 
+lexicographical order.
+The first data structure of the FM-Index consists in a compressed Suffix Array 
+of the original sequence.
+The compressed version is simply obtained by selecting the suffixes positions 
+that are divisible by a certain value given in input.
+The Suffix Array, in this package, is also needed to build the \ref(BWT)
+
+```{r}
+# Creates the Suffix Array of a string
+DNA_string <- "ACCTGGAC"
+SA <- create_SA(DNA_string)
+# To select a subset of the suffix array
+# NOTE: this is already implemented in the FM_Index function
+k <- 2 # set a value in line with the sequence length
+SSA <- SA[SA %% k == 0] # Extract 
+
+print(SA)
+print(SSA)
+```
+
+#### Burrows-Wheeler Transform {#BWT}
+
+A data structure of the \ref(FM).
+The Barrows-Wheeler Transform (BWT) is a string of the same length of the 
+original sequence, and is saved along with a compressed version of the 
+first column of the Burrows-Wheeler Matrix (BWM).
+This structures is essential to build the \ref(TM) and to implement the 
+pattern recognition funtionality.
+
+```{r}
+# Creates the BWT of a DNA_string
+DNA_string <- "ACCTGGAC"
+bwt <- createBWT(DNA_string)
+print(bwt)
+```
+
+#### Sparse Tally matrix {#TM}
+
+A data structure of the \ref(FM).
+The tally matrix is a cumulative character count of the \ref(BWT).
+A sparse version of the tally matrix is useful for efficiently storing this 
+structure for long DNA sequences, and is obtained by saving the rows at a 
+specific interval defined in input.
+
+```{r}
+DNA_string <- "ACCTGGAC"
+
+#creates the sparse tally matrix of the BWT of the DNA string
+step <- 2
+sparse_tally <- sparse_tally(DNA_string,step)
+print(sparse_tally)
+```
+
+```{r sessionInfo}
+sessionInfo()
+```

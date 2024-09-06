@@ -1,0 +1,17 @@
+Package: FMIndex
+Title: Creates the FM-Index of a DNA Sequence
+Version: 0.99.0
+Depends: R (>= 4.4.0)
+Suggests: knitr, rmarkdown, testthat, pandoc
+Imports: Biostrings, GenomicRanges
+Authors@R: 
+    person("Denis", "Cattafi", , "denis.cattafi@mail.polimi.it", role = c("aut", "cre"),comment=c(ORCID="0009-0009-6300-896X"))
+Description: Creates the FM-Index of a DNA sequence given in input in FASTA format. The output consists in three separated CSV files saved in a directory given in input. The FM-Index is composed of three data structures: Burrows-Wheeler Transform with the first column of the BW Matrix, a tally matrix of the BWT and a Suffix Array. In this package they are compressed to allow an efficient storage of long DNA sequences. This index can be used also for counting, searching or extracting specific patterns. This functionalities are not currently implemented, but will be in the future. The FM-Index can be used for any type of string, but in this package the usage is limited to DNA sequences.
+VignetteBuilder: knitr
+URL: https://github.com/DensCatt/FMIndex_package
+BugReports: https://github.com/DensCatt/FMIndex_package/issues
+License: GPL-2
+Encoding: UTF-8
+biocViews: Infrastructure, DataImport, DataRepresentation, SequenceMatching
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
