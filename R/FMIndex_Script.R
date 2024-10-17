@@ -212,14 +212,17 @@ FM_index <- function(fasta_file,step_tally=32,k=32,output="./FM_index_Results"){
 
     string <- as.character(DNA_seq)[[1]]
 
-    bwt <- createBWT(string)
+    char_counts <- createBWT(string)[c(1:4)]
+    bwt <- createBWT(string)[5]
     tally <- sparse_tally(string,step_tally)
     SA <- create_SA(string)
 
     SSA <- SA[SA %% k == 0] #reduce the memory required
 
+    write.table(char_counts, file = file.path(output, "char_counts.csv"),
+                row.names= c("A:","C:","G:","T:"),col.names = FALSE,sep=";")
     write.table(bwt, file = file.path(output, "BWT.csv"),
-                row.names = c("A:","C:","G:","T:","BWT:"),
+                row.names = c("BWT:"),
                 quote=FALSE,col.names=FALSE,sep=";")
     write.table(tally, file = file.path(output, "Sparse_Tally.csv"),
                 row.names = FALSE,sep=";",quote=FALSE)
